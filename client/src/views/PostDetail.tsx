@@ -62,6 +62,7 @@ function PostDetail() {
   useEffect(() => {
     fetchPost();
     // getLocation();
+
     console.log(postId);
   }, []);
 
