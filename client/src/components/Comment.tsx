@@ -8,12 +8,6 @@ function Comments({ comments, _id }) {
   console.log("experienceID on commentsComp:>> ", experienceID);
 
   const [newComment, setNewComment] = useState({
-    author: {
-      _id: user?._id,
-      //   email: user?.email,
-      //   username: user?.username,
-      //   user_image: user?.user_image,
-    },
     date: new Date(),
     // message: "",
     // experienceID: experienceID,
