@@ -1,30 +1,19 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import InstgramCard from "../components/InstgramCard";
 
 import { useParams } from "react-router-dom";
-import Comments from "../components/comment";
+import Comments from "../components/Comment";
+import { Post } from "../type/customTypes";
+// import Home from "../components/SinglePost";
+// import SinglePost from "../components/SinglePost";
+import { Card } from "react-bootstrap";
 
 function PostDetail() {
   const { postId } = useParams();
-  const [post, setPost] = useState({
-    _id: "",
-    user: "",
-    likrs: "",
-    comments: [
-      {
-        ObjectId: "653284e9a1635f0065c37a18",
-      },
-    ],
-    title: "",
-    captions: "",
-    location: {
-      country: "",
-      city: "",
-      longitude: "",
-      latitude: "",
-    },
-  });
+  console.log("postid=>>>", postId);
+
+  const [post, setPost] = useState<Post | null>(null);
+  const comments = post ? post.comments : [];
 
   const fetchPost = async () => {
     const requestOptions = {
@@ -43,17 +32,6 @@ function PostDetail() {
         console.log("posts=>", post);
         setPost(data);
       }
-      // console.log("results :>> ", results);
-
-      // if (results.status === 200) {
-      //   const data = await results.json();
-      //   console.log("data :>> ", data);
-      //   const postsList = data.data as Posts[];
-
-      //   console.log("postsList :>> ", postsList);
-
-      //   setPosts(postsList);
-      // }
     } catch (error) {
       console.log("error :>> ", error);
     }
@@ -67,10 +45,23 @@ function PostDetail() {
   }, []);
 
   return (
-    <div>
-      <InstgramCard post={post} />
-      <Comments comments={post.comments} _id={postId} />
-    </div>
+    <>
+      <Card style={{ width: "30rem" }} key={post?._id}>
+        <Card.Img variant="top" src={post?.image} />
+        <Card.Body>
+          <Card.Title>{post?.title}</Card.Title>
+          <Card.Text>{post?.captions}</Card.Text>
+          <Card.Text>{post?.location.country}</Card.Text>
+          <Card.Text>{post?.location.city}</Card.Text>
+          {/* <Card.Text>{post?.time}</Card.Text> */}
+          {/* <Card.Text>{post?.likes}</Card.Text> */}
+          {/* <Card.Text>{post?.saved_by}</Card.Text> */}
+          <Card.Text>
+            {post && <Comments comments={comments} _id={postId} />}
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    </>
   );
 }
 

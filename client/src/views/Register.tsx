@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 type UserImage = {
   userImage: string;
@@ -10,6 +10,7 @@ interface User extends UserImage {
   userName: string;
   email: string;
   password: string;
+  signupTime: Date;
 }
 function Register() {
   const [selectedFile, setselectedFile] = useState<File | string>("");
@@ -19,6 +20,7 @@ function Register() {
     email: "",
     password: "",
     userImage: "",
+    signupTime: new Date(),
   });
 
   const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +77,7 @@ function Register() {
     urlencoded.append("userName", newUser.userName);
     urlencoded.append("email", newUser.email);
     urlencoded.append("password", newUser.password);
+    urlencoded.append("signupTime", newUser.signupTime);
     urlencoded.append("userImage", newUser.userImage ? newUser.userImage : "");
 
     const requestOptions = {
@@ -99,53 +102,56 @@ function Register() {
       <h2>Register</h2>
 
       <div>
-        <Form onSubmit={handelSubmitRegister}>
-          <Form.Group className="mb-3" controlId="formBasicText">
-            <Form.Label>User Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="userName"
-              placeholder="Enter username"
-              onChange={handleRegisterInput}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              onChange={handleRegisterInput}
-            />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
+        <Card className="register">
+          <Form onSubmit={handelSubmitRegister}>
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>User Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="userName"
+                placeholder="Enter username"
+                onChange={handleRegisterInput}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                onChange={handleRegisterInput}
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              onChange={handleRegisterInput}
-            />
-          </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                onChange={handleRegisterInput}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formFileSm" className="mb-3">
-            <Form.Label>image</Form.Label>
-            <Form.Control
-              type="file"
-              size="sm"
-              name="image"
-              onChange={handleFileInput}
-            />
-          </Form.Group>
+            <Form.Group
+              controlId="formFile"
+              className="mb-3"
+              style={{ width: "18rem" }}
+            >
+              <Form.Label>{newUser.userImage}</Form.Label>
+              <Form.Control
+                type="file"
+                name="image"
+                onChange={handleFileInput}
+              />
+            </Form.Group>
 
-          <button type="submit">Register</button>
-        </Form>
-
-        <div></div>
+            <Button variant="dark" type="submit">
+              Register
+            </Button>
+          </Form>
+        </Card>
+        /
         {/* <form onSubmit={handleFileSubmit}>
           <input type="file" name="image" onChange={handleFileInput} />
           <Button type="submit">Upload image</Button>

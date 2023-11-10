@@ -53,6 +53,7 @@ const register = async (req, res) => {
             userName: req.body.userName,
             email: req.body.email,
             password: hashedPassword,
+            // signupTime: user.signupTime,
             userImage: req.body.userImage ? req.body.userImage : undefined,
           });
 
@@ -63,6 +64,7 @@ const register = async (req, res) => {
               userName: savedUser.userName,
               email: savedUser.email,
               userImage: savedUser.userImage,
+              // signupTime: savedUser.signupTime,
             },
           });
         } catch (error) {
@@ -120,9 +122,13 @@ const login = async (req, res) => {
           res.status(200).json({
             msg: "login success",
             user: {
+              _id: existingUser._id,
               userName: existingUser.userName,
               email: existingUser.email,
               userImage: existingUser.userImage,
+              bio: existingUser.bio,
+              signupTime: existingUser.signupTime,
+              // signupTime: user.signupTime,
             },
             token,
           });
@@ -156,6 +162,8 @@ const getProfile = (req, res) => {
         userName: req.user.userName,
         email: req.user.email,
         userImage: req.user.userImage,
+        bio: req.user.bio,
+        signupTime: req.user.signupTime,
       },
     });
   }
@@ -165,4 +173,124 @@ const getProfile = (req, res) => {
     });
   }
 };
-export { imageUpload, register, login, getProfile };
+
+const checkUserStatus = async (req, res) => {
+  const { user } = req;
+
+  if (user) {
+    res.status(200).json({
+      message: "user is logged in",
+      user: {
+        id: user._id,
+        email: user.email,
+        userImage: user.userImage,
+        userName: user.userName,
+        signupTime: user.signupTime,
+        bio: user.bio,
+      },
+    });
+  } else {
+    res.status(400).json({ message: "user is not logged in" });
+  }
+};
+// deleteUser
+
+const deleteUser = async (req, res) => {
+  const userId = req.params._id;
+  console.log(req.params);
+  try {
+    if (!userId) {
+      return res.status(400).json({
+        msg: "userId is required in the URL parameter",
+      });
+    }
+
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        msg: " User not found",
+      });
+    }
+
+    res.status(200).json({
+      msg: "User deleted successfully",
+      user: deletedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Something went wrong",
+      error: error,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  // console.log("req.user :>> ", req.user);
+  // console.log("req.body :>> ", req.body);
+
+  const { userName, email, userImage, password, _id } = req.body;
+  // const id = req.user._id;
+
+  try {
+    const updatedFields = {};
+    if (userName) {
+      const existingUsername = await userModel.findOne({ userName: userName });
+      if (existingUsername === userName) {
+        return res
+          .status(400)
+          .json({ errors: { msg: "Username already in use" } });
+      }
+      updatedFields.userName = userName;
+    }
+    if (email) {
+      const existingEmail = await userModel.findOne({ email: email });
+      const emailRegex =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+      if (existingEmail && email !== req.user.email) {
+        return res
+          .status(400)
+          .json({ errors: { msg: "Email already in use" } });
+      }
+      if (!emailRegex.test(email)) {
+        return res
+          .status(400)
+          .json({ errors: { msg: "email address is invalid" } });
+      }
+      updatedFields.email = email;
+    }
+    if (userImage) {
+      updatedFields.userImage = userImage;
+    }
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({
+          errors: { msg: "password should be at least 6 characters" },
+        });
+      }
+      const hashedPassword = await passwordEncryption(req.body.password);
+      updatedFields.password = hashedPassword;
+    }
+    const updatedUser = await userModel.findByIdAndUpdate(_id, updatedFields, {
+      new: true,
+    });
+
+    return res
+      .status(200)
+      .json({ msg: "Update successful", user: updatedUser });
+  } catch (error) {
+    // console.log("error", error);
+    res.status(500).json({ msg: "Error updating info", error: error });
+  }
+};
+
+export {
+  imageUpload,
+  register,
+  login,
+  getProfile,
+  checkUserStatus,
+  updateUser,
+  deleteUser,
+};

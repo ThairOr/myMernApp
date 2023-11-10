@@ -4,13 +4,20 @@ import userModel from "../models/userModel.js";
 const getPost = async (req, res) => {
   console.log("get single post");
   const id = req.params._id;
+  console.log("PostID---->", id);
   try {
-    const postById = await postsModel.findById(id);
+    const postById = await postsModel.findById(id).populate("comments");
 
-    if (postById.length < 1) {
-      res.status(200).json({ message: "no post matches" });
-    } else {
+    console.log("postById=====>", postById);
+    // if (postById.length < 1) {
+    //   res.status(200).json({ message: "no post matches" });
+    // } else {
+    //   res.status(200).json(postById);
+    // }
+    if (postById) {
       res.status(200).json(postById);
+    } else {
+      res.status(200).json({ message: "no post matches" });
     }
   } catch (error) {
     console.log("error :>> ".bgRed, error);
@@ -33,6 +40,7 @@ const getAllPosts = async (req, res) => {
         "likes",
         "comment",
         "saved_by",
+        "time",
       ],
     });
 
@@ -51,9 +59,13 @@ const getAllPosts = async (req, res) => {
     });
   }
 };
+
+// !THIS FUNCTION GETS CALLED WHEN WE TRY TO CALL SINGLE POST
 const getCommentsByUserId = async (req, res) => {
+  console.log("get single post");
   const { comments } = req.params;
   const { likes } = req.query;
+
   if (likes) {
     try {
       const posts = await allPost.find({
@@ -89,8 +101,10 @@ const getCommentsByUserId = async (req, res) => {
   }
 };
 // 2. create a controller function to create a new post. It will work similar to the register user : in the body of the request, (req.body),
-const submitPost = async (req, res) => {
+//TODO change function name to something like "createComment" , "saveComment"
+const createPost = async (req, res) => {
   console.log("req.body", req.body);
+
   try {
     const existingUser = await userModel.findOne({ email: req.body.email });
     console.log("existingUser :>>", existingUser);
@@ -103,11 +117,13 @@ const submitPost = async (req, res) => {
             city: req.body.city,
           },
           user: existingUser._id,
-          // likes: req.body.likes,
+          time: req.body.time,
           title: req.body.title,
           captions: req.body.captions,
-          // comments: req.body.comments,
-          // saved_by: req.body.saved_by,
+          story: req.body.story,
+          //TODO if you want to also add "story" to the new post, add that to the model , and use it here
+          comments: req.body.comments,
+          saved_by: req.body.saved_by,
         });
         // save this Data newSubmission.save()
         const savedSubmission = await newSubmission.save();
@@ -135,4 +151,25 @@ const submitPost = async (req, res) => {
   }
 };
 
-export { getAllPosts, getCommentsByUserId, submitPost, getPost };
+const deletePost = async (req, res) => {
+  const { idPostToDelete } = req.body;
+  const { user } = req;
+  console.log("req.body", req.body);
+  try {
+    // fin post to delete
+    const deletedPost = await postsModel.findByIdAndRemove(idPostToDelete);
+    console.log("deletedPost", deletedPost);
+    if (deletedPost) {
+      res.status(200).json({
+        message: "post deleted",
+      });
+    }
+  } catch (error) {
+    console.log("error deleting post", error);
+    res.status(400).json({
+      message: "cannot delete Post",
+    });
+  }
+};
+
+export { getAllPosts, getCommentsByUserId, createPost, getPost, deletePost };

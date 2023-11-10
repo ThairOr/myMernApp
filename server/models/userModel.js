@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "https://i.stack.imgur.com/l60Hf.png",
   },
+  signupTime: {
+    type: Date,
+    default: Date.now,
+  },
 
   bio: {
     type: String,

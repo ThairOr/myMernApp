@@ -1,16 +1,16 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+// import { Button, Card, Form } from "react-bootstrap";
 
 function Comments({ comments, _id }) {
   const { user } = useContext(AuthContext);
+  console.log("comments _Id===>", comments, _id);
 
-  const experienceID = _id;
-  console.log("experienceID on commentsComp:>> ", experienceID);
+  const CommentPostID = _id;
+  // console.log(" postDetailID:>> ", postDetailID);
 
   const [newComment, setNewComment] = useState({
     date: new Date(),
-    // message: "",
-    // experienceID: experienceID,
   });
   const [updatedComments, setUpdatedComments] = useState<[] | null>(null);
   const [textInput, setTextInput] = useState("");
@@ -28,7 +28,7 @@ function Comments({ comments, _id }) {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("You need to log in first!");
+      return alert("You need to log in first!");
     }
 
     if (token) {
@@ -38,12 +38,9 @@ function Comments({ comments, _id }) {
       myHeaders.append("Authorization", `Bearer ${token}`);
 
       const urlencoded = new URLSearchParams();
-      urlencoded.append("_id", user!._id);
-      urlencoded.append("email", user!.email);
-      urlencoded.append("username", user!.username);
-      urlencoded.append("user_image", user!.user_image);
-      //   urlencoded.append("message", newComment.message);
-      urlencoded.append("experience", experienceID);
+      // urlencoded.append("_id", user!._id);
+      // urlencoded.append("email", user!.email);
+      urlencoded.append("message", textInput);
 
       const requestOptions = {
         method: "POST",
@@ -52,7 +49,7 @@ function Comments({ comments, _id }) {
       };
       try {
         const response = await fetch(
-          `http://localhost:5005/api/experiences/experiences/${_id}/comments`,
+          `http://localhost:5005/api/comment/posts/${_id}`,
           requestOptions
         );
 
@@ -61,7 +58,7 @@ function Comments({ comments, _id }) {
         const data = await response.json();
         console.log("data for my new comment :>> ", data);
         if (response.ok) {
-          const newComment = data.comment;
+          comments.push(data.comment);
         } else {
           console.error("Error posting comment:", data.message);
         }
@@ -72,7 +69,6 @@ function Comments({ comments, _id }) {
     setTextInput("");
   };
 
-  //TODO -
   const handleDeleteComment = async (commentId: string) => {
     const token = localStorage.getItem("token");
 
@@ -92,7 +88,7 @@ function Comments({ comments, _id }) {
     };
     try {
       const response = await fetch(
-        `http://localhost:5005/api/experiences/deletecomment/${commentId}`,
+        `http://localhost:5005/api/comment/posts/${user}`,
         requestOptions
       );
       if (response.ok) {
@@ -104,81 +100,65 @@ function Comments({ comments, _id }) {
       console.log("error when deleting comment:>> ", error);
     }
   };
-  // if (window.confirm("Are you SURE you want to delete your comment?"))
-  return (
-    <div>
-      <h2>comments:</h2>
-      <form onSubmit={handleSubmitComment}>
-        <div className="inputContainer">
-          <input
-            name="message"
-            type="text"
-            placeholder="Leave a comment..."
-            onChange={handleNewComments}
-            value={textInput}
-          />
-          <button
-            style={{ backgroundColor: "white" }}
-            className="nakdButton"
-            type="submit"
-          >
-            submit
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
-              viewBox="0 0 25 25"
-              fill="none"
-            >
-              <path
-                d="M2.08337 21.875L23.9584 12.5L2.08337 3.125V10.4167L17.7084 12.5L2.08337 14.5833V21.875Z"
-                fill="#EFCB59"
+  if (window.confirm("Are you SURE you want to delete your comment?"))
+    return (
+      <div>
+        <div style={{ backgroundColor: "white" }}>
+          {comments ? (
+            <div>
+              {comments.length > 0 ? (
+                comments.map((comment, commentIndex) => {
+                  return (
+                    <div className="singleComment" key={commentIndex}>
+                      <div className="singleCommentHeader">
+                        <h4>{comment.user.username}</h4>
+
+                        <p>{comment.date}</p>
+                      </div>
+                      <div className="commentBody">
+                        <p className="commentMsg">{comment.message}</p>
+                        {user?.email === comment.user.email && (
+                          <button
+                            onClick={() => {
+                              handleDeleteComment(comment._id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <>
+                  <p style={{ color: "black" }}>
+                    Be the first one to leave a comment!
+                  </p>
+                  <br />
+                </>
+              )}
+            </div>
+          ) : null}
+
+          <form onSubmit={handleSubmitComment}>
+            <div>
+              <input
+                name="message"
+                type="text"
+                placeholder="Leave a comment..."
+                onChange={handleNewComments}
+                value={textInput}
               />
-            </svg>
+            </div>
+          </form>
+
+          <button className="commtButtun" type="submit">
+            submit
           </button>
         </div>
-      </form>
-
-      <div style={{ backgroundColor: "white" }}>
-        {comments ? (
-          <div>
-            {comments.length > 0 ? (
-              comments.map((comment, commentIndex) => {
-                return (
-                  <div className="singleComment" key={commentIndex}>
-                    <div className="singleCommentHeader">
-                      {/* <h4>{comment.author.username}</h4> */}
-
-                      <p>{comment.date}</p>
-                    </div>
-                    <div className="commentBody">
-                      {/* <p className="commentMsg">{comment.message}</p> */}
-                      {/* {user?.email === comment.author.email && (
-                        <button
-                          onClick={() => {
-                            handleDeleteComment(comment._id);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      )} */}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <>
-                <p style={{ color: "black" }}>
-                  Be the first one to leave a comment!
-                </p>
-                <br />
-              </>
-            )}
-          </div>
-        ) : null}
       </div>
-    </div>
-  );
+    );
 }
 
 export default Comments;

@@ -1,10 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-
-// import { Button } from "react-bootstrap";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import "../style/SubmitPost.css";
+import { Button, Form } from "react-bootstrap";
 // import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { NewPost } from "../type/customTypes";
+import { Card } from "react-bootstrap";
+import { AuthContext } from "../context/AuthContext";
 
 // interface Location {
 //   country: string;
@@ -17,6 +24,7 @@ import { NewPost } from "../type/customTypes";
 // }
 
 function SubmitPost() {
+  //TODO Create a link, maybe in HOME, when you see all the posts, to go to the post creation
   const [displayPhoto, setDisplayPhoto] = useState<File | string>("");
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [newPost, setNewPost] = useState<NewPost>({
@@ -26,6 +34,7 @@ function SubmitPost() {
       country: "",
       city: "",
     },
+    time: new Date(),
   });
   const [selectedFile, setselectedFile] = useState<File | string>("");
 
@@ -50,8 +59,6 @@ function SubmitPost() {
     console.log("e", e.target.files?.[0]);
     setselectedFile(e.target.files?.[0] || "");
   };
-
-  console.log("user", user);
 
   const handleDisplayPhotosSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -129,44 +136,74 @@ function SubmitPost() {
   }, []);
 
   return (
-    <div className="inputColorBox">
-      <form onSubmit={handleDisplayPhotosSubmit}>
-        photo
-        <input name="image" type="file" onChange={handleFileInput} />
-        <button type="submit">upload</button>
-      </form>
-      <br />
-      <form onSubmit={handleSubmitPost}>
-        <br />
-        <label htmlFor="title">title:</label>
-        <input name="title" type="text" onChange={handleFormIput} />
-        <br />
-        <br />
-        <label htmlFor="caption">caption:</label>
-        <input name="caption" type="text" onChange={handleFormIput} />
-        <br />
-        <br />
-        <label htmlFor="country">country:</label>
-        <input name="country" type="text" onChange={handleLocationInput} />
-        <br />
-        <br />
-        <label htmlFor="city">city:</label>
-        <input name="city" type="text" onChange={handleLocationInput} />
-        <br />
-        <br />
-        <label htmlFor="story">story:</label>
-        <input
-          name="text_body"
-          id="textInput"
-          type="text"
-          onChange={handleFormIput}
-        />
-        <br />
-        <button className="formButton" type="submit">
-          submit
-        </button>
-      </form>
-    </div>
+    <Card border="dark" className="input" key={user?.email}>
+      <Form onSubmit={handleSubmitPost} className="form_post">
+        <Form.Group className="mb-3" controlId="formBasicText">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            name="title"
+            type="text"
+            onChange={handleFormIput}
+            placeholder="Enter title"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicText1">
+          <Form.Label>Captions</Form.Label>
+          <Form.Control
+            name="captions"
+            type="text"
+            onChange={handleFormIput}
+            placeholder="Enter captions"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicText2">
+          <Form.Label>Country</Form.Label>
+          <Form.Control
+            name="country"
+            type="text"
+            onChange={handleLocationInput}
+            placeholder="Enter country"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicText3">
+          <Form.Label>City</Form.Label>
+          <Form.Control
+            name="city"
+            type="text"
+            onChange={handleLocationInput}
+            placeholder="Enter city"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicText4">
+          <Form.Label>Story</Form.Label>
+          <Form.Control
+            name="text_body"
+            type="text"
+            onChange={handleFormIput}
+            placeholder="Enter story"
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formFile" className="mb-3">
+          <Form.Label onSubmit={handleDisplayPhotosSubmit}>Photo</Form.Label>
+          <Form.Control name="image" type="file" onChange={handleFileInput} />
+          <Button
+            variant="outline-secondary"
+            onClick={handleDisplayPhotosSubmit}
+          >
+            Upload
+          </Button>
+        </Form.Group>
+
+        <Button variant="dark" type="submit" className="button_post">
+          Submit
+        </Button>
+      </Form>
+    </Card>
   );
 }
 

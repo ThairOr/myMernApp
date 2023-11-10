@@ -21,7 +21,8 @@ import Login from "./views/Login";
 import Logout from "./views/Logout";
 import MyNavbar from "./components/MyNavbar";
 import ErrorPage from "./views/ErrorPage";
-import Home from "./views/Home";
+import CreatePost from "./views/CreatePost";
+
 import Profile from "./views/Profile";
 import Posts from "./views/Posts";
 import { AuthContextProvider } from "./context/AuthContext";
@@ -31,12 +32,13 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
-        <Route index element={<Home />} />
+        <Route index element={<Posts />} />
         <Route path="login" element={<Login />} />
+        <Route path="CreatPost" element={<CreatePost />} />
         <Route path="logout" element={<Logout />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="post" element={<Posts />}></Route>
+        {/* <Route path="posts" element={<Posts />}></Route> */}
         <Route path="post/:postId" element={<PostDetail />} />
 
         {/* <Route path="*" element={<ErrorPage />} /> */}

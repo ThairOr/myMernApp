@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect } from "react";
 import { useState, useContext } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -53,31 +53,40 @@ function Login() {
 
   return (
     <div>
-      <h1>login</h1>
-      <div>
-        <Form onSubmit={handleSubmitLogin}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              onChange={handleLoginInput}
-            />
-          </Form.Group>
+      <h2>login</h2>
+      <div className="login">
+        <Card>
+          <Form onSubmit={handleSubmitLogin}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                onChange={handleLoginInput}
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              onChange={handleLoginInput}
-            />
-          </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                onChange={handleLoginInput}
+              />
+            </Form.Group>
 
-          <Button type="submit">Login</Button>
-        </Form>
+            <Button variant="dark" type="submit">
+              Login
+            </Button>
+            <hr />
+          </Form>
+          <Card.Text>
+            You don't have an account? Go to{" "}
+            <a href="http://localhost:5173/register">Register</a> page.
+          </Card.Text>
+        </Card>
       </div>
     </div>
   );

@@ -1,0 +1,43 @@
+.input{
+            background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);
+            border: 1px solid #5b5a5a;
+            border-radius: 5px;
+            margin: 1rem;
+            padding: 2rem 1rem 1rem;
+            width: 40rem;
+}
+
+/* {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    } */
+
+    .form_post{
+                    background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);  
+                        border-radius: 5px;
+                        display: flex;
+                            flex-direction: row;
+                            flex-wrap: wrap;
+                           gap: 1rem;             
+    }
+
+    .button_post{
+        display: flex;
+        text-align: center;
+    }
+    .profile{
+        background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);
+            border-radius: 5px;
+    }
+    .register{
+        background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);
+    
+            border-radius: 10px;
+    }
+
+    .login{
+        
+        background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);
+            border-radius: 5px;
+    }

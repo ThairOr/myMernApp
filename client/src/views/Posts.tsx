@@ -1,31 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import InstgramCard from "../components/InstgramCard";
+
+import { Post } from "../type/customTypes";
+
+import SinglePost from "../components/SinglePost";
+import { Container, Row } from "react-bootstrap";
 
 function Posts() {
-  const [posts, setPosts] = useState([
-    {
-      _id: "",
-      user: "",
-      likrs: "",
-      comments: [
-        {
-          ObjectId: "653284e9a1635f0065c37a18",
-        },
-      ],
-      title: "",
-      captions: "",
-      location: {
-        country: "",
-        city: "",
-        longitude: "",
-        latitude: "",
-      },
-    },
-  ]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
 
   /////////////////
-  //! Exercise to show how to find the location usin the IP, and use the coordinates to fetch information about those coordinates
   /////////////////
   // const getLocation = () => {
   //   navigator.geolocation.getCurrentPosition(position);
@@ -54,8 +38,11 @@ function Posts() {
       if (response.status === 200) {
         const data = await response.json();
         console.log("data=>", data);
-        console.log("posts=>", posts);
+
         setPosts(data.allPost);
+      } else {
+        console.log("posts set to null");
+        setPosts(null);
       }
       // console.log("results :>> ", results);
 
@@ -81,10 +68,14 @@ function Posts() {
   return (
     <div>
       <h1>Berlinstagram Posts</h1>
-      {posts &&
-        posts.map((singlePost) => {
-          return <InstgramCard post={singlePost} />;
-        })}
+      <Container>
+        <Row>
+          {posts &&
+            posts.map((singlePost) => {
+              return <SinglePost post={singlePost} />;
+            })}
+        </Row>
+      </Container>
     </div>
   );
 }

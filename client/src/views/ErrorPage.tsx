@@ -11,10 +11,11 @@ interface RouteErrorType {
 }
 
 function ErrorPage() {
-  const error = useRouteError() as RouteErrorType;
+  // const error = useRouteError as RouteErrorType;
   return (
     <>
-      <h1>...Ups...nothing to see here </h1>;<h3>{error.message}</h3>
+      <h1>...Ups...nothing to see here </h1>
+      {/* <h3>{error.message}</h3> */}
     </>
   );
 }

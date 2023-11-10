@@ -3,11 +3,11 @@ import { useContext, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 function MyNavbar() {
-  const { isUserLoggedIn, logout } = useContext(AuthContext);
+  const { isUserLoggedIn, logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,12 +26,12 @@ function MyNavbar() {
           <Navbar.Brand as={NavLink} to="/">
             Home
           </Navbar.Brand>
-          <Navbar.Brand as={NavLink} to="/post">
-            InstgramPosts
+          <Navbar.Brand as={NavLink} to="/creatpost">
+            New Post
           </Navbar.Brand>
           <Nav className="me-auto">
             {/* login component should only be accessable if the user is not logged in */}
-            {!isUserLoggedIn() && (
+            {!user && (
               <Nav.Link as={NavLink} to="/login">
                 Login{" "}
               </Nav.Link>
@@ -41,10 +41,10 @@ function MyNavbar() {
                 Logout link will not navigate to logout component, instead it will call logout function and navigate 
                 to the login page.
             */}
-            {isUserLoggedIn() && (
+            {user && (
               <Nav.Link onClick={() => submitLogout()}>Logout </Nav.Link>
             )}
-            {!isUserLoggedIn() && (
+            {!user && (
               <Nav.Link as={NavLink} to="/register">
                 {" "}
                 Register{" "}
@@ -55,7 +55,6 @@ function MyNavbar() {
                 Profile
               </Nav.Link>
             )}
-            {/* <Nav.Link  as={NavLink} to="/login">Login</Nav.Link> */}
           </Nav>{" "}
         </Container>
       </Navbar>

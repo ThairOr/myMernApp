@@ -29,17 +29,27 @@ const postsSchema = new mongoose.Schema({
   title: {
     type: String,
   },
+  time: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
   captions: {
+    type: String,
+  },
+  story: {
     type: String,
   },
   comments: [
     {
-      type: { type: mongoose.Schema.Types.ObjectId, ref: "comment" },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "comment",
     },
   ],
   saved_by: [
     {
-      type: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
   ],
 });
