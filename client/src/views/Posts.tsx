@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Post } from "../type/customTypes";
 
 import SinglePost from "../components/SinglePost";
-import { Container, Row } from "react-bootstrap";
+import { Card, Container, Row } from "react-bootstrap";
 
 function Posts() {
   const [posts, setPosts] = useState<Post[] | null>(null);
@@ -66,13 +66,12 @@ function Posts() {
   }, []);
 
   return (
-    <div>
-      <h1>Berlinstagram Posts</h1>
+    <div className="home">
       <Container>
         <Row>
           {posts &&
             posts.map((singlePost) => {
-              return <SinglePost post={singlePost} />;
+              return <SinglePost post={singlePost} fetchPosts={fetchPosts} />;
             })}
         </Row>
       </Container>

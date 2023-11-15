@@ -2,6 +2,7 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
 type UserImage = {
   userImage: string;
 };
@@ -13,6 +14,7 @@ interface User extends UserImage {
   signupTime: Date;
 }
 function Register() {
+  const redirect = useNavigate();
   const [selectedFile, setselectedFile] = useState<File | string>("");
 
   const [newUser, setNewUser] = useState<User>({
@@ -53,7 +55,7 @@ function Register() {
       console.log("result------------- :>> ", result.imageUrl);
       //here we get the URL for the user profile picture
       //update the user data with the uploaded image info and set the new user
-      setNewUser({ ...newUser, userImage: result.imageUrl });
+      setNewUser({ ...newUser, userImage: userImage });
       console.log(newUser);
     } catch (error) {
       console.log("error :>> ", error);
@@ -68,7 +70,6 @@ function Register() {
 
   const handelSubmitRegister = async (e: FormEvent<HTMLFormElement>) => {
     //First upload the image
-    handleImageSubmit(e);
 
     //Then upload the user info
     e.preventDefault();
@@ -92,6 +93,7 @@ function Register() {
       );
       const result = await response.json();
       console.log("result :>> ", result);
+      redirect("/login");
     } catch (error) {
       console.log("error :>> ", error);
     }
@@ -103,66 +105,79 @@ function Register() {
 
       <div>
         <Card className="register">
-          <Form onSubmit={handelSubmitRegister}>
-            <Form.Group className="mb-3" controlId="formBasicText">
-              <Form.Label>User Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="userName"
-                placeholder="Enter username"
-                onChange={handleRegisterInput}
+          <Card.Body>
+            <Form onSubmit={handelSubmitRegister}>
+              <Form.Group className="mb-3" controlId="formBasicText">
+                <Form.Label>User Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="userName"
+                  placeholder="Enter username"
+                  onChange={handleRegisterInput}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  onChange={handleRegisterInput}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Enter password"
+                  onChange={handleRegisterInput}
+                />
+              </Form.Group>
+            </Form>
+            <Form onSubmit={handleImageSubmit}>
+              {" "}
+              <Form.Group
+                controlId="formFile"
+                className="mb-3"
+                style={{ width: "18rem" }}
+              >
+                <Form.Label>{newUser.userImage}</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="image"
+                  onChange={handleFileInput}
+                />
+                <Button variant="dark" type="submit" style={{ margin: "1rem" }}>
+                  Upload image
+                </Button>
+              </Form.Group>
+            </Form>
+            <Form onSubmit={handelSubmitRegister}>
+              <Button variant="dark" type="submit">
+                Register
+              </Button>
+            </Form>
+          </Card.Body>
+          <br />
+          <br />
+          {newUser.userImage && (
+            <div>
+              <Card.Img
+                variant="top"
+                src={newUser.userImage}
+                alt="user-avatar-picture"
+                style={{ width: "18rem" }}
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                onChange={handleRegisterInput}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                onChange={handleRegisterInput}
-              />
-            </Form.Group>
-
-            <Form.Group
-              controlId="formFile"
-              className="mb-3"
-              style={{ width: "18rem" }}
-            >
-              <Form.Label>{newUser.userImage}</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={handleFileInput}
-              />
-            </Form.Group>
-
-            <Button variant="dark" type="submit">
-              Register
-            </Button>
-          </Form>
+            </div>
+          )}
         </Card>
-        /
-        {/* <form onSubmit={handleFileSubmit}>
+        {/* 
+        <form onSubmit={handleImageSubmit}>
           <input type="file" name="image" onChange={handleFileInput} />
           <Button type="submit">Upload image</Button>
         </form> */}
       </div>
-
-      {newUser.userImage && (
-        <div>
-          <img src={newUser.userImage} alt="user-avatar-picture" />
-        </div>
-      )}
     </div>
   );
 }

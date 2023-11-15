@@ -8,6 +8,7 @@ interface AuthContextType {
   logout: () => void;
   deleteUser: () => void;
   register: (newUser: User) => Promise<void>;
+  getProfile: () => void;
 }
 const initialContext = {
   user: null,

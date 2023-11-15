@@ -1,19 +1,54 @@
 import postsModel from "../models/postsModel.js";
 import userModel from "../models/userModel.js";
+import commentsModel from "../models/commentsModel.js";
+
+// const getPost = async (req, res) => {
+//   console.log("get single post");
+//   const id = req.params._id;
+//   console.log("PostID---->", id);
+//   try {
+//     const postById = await postsModel.findById(id).populate({
+//       path: "comments",
+//       populate: {
+//         path: "user",
+//         select: ["email", "userName", "userImage"],
+//       },
+//     });
+
+//     console.log("postById=====>", postById);
+//     // if (postById.length < 1) {
+//     //   res.status(200).json({ message: "no post matches" });
+//     // } else {
+//     //   res.status(200).json(postById);
+//     // }
+//     if (postById) {
+//       res.status(200).json(postById);
+//     } else {
+//       res.status(200).json({ message: "no post matches" });
+//     }
+//   } catch (error) {
+//     console.log("error :>> ".bgRed, error);
+//     res.status(500).json({
+//       error: "something went wrong in the server",
+//     });
+//   }
+// };
 
 const getPost = async (req, res) => {
   console.log("get single post");
   const id = req.params._id;
   console.log("PostID---->", id);
   try {
-    const postById = await postsModel.findById(id).populate("comments");
+    const postById = await postsModel.findById(id).populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: ["email", "userName"],
+      },
+    });
 
     console.log("postById=====>", postById);
-    // if (postById.length < 1) {
-    //   res.status(200).json({ message: "no post matches" });
-    // } else {
-    //   res.status(200).json(postById);
-    // }
+
     if (postById) {
       res.status(200).json(postById);
     } else {

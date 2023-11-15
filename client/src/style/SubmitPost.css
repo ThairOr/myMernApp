@@ -41,3 +41,7 @@
         background: radial-gradient(circle, #fefffe 0, #f5f9d2 100%);
             border-radius: 5px;
     }
+    .home{
+        margin: 2%;
+        padding: 4%;
+    }

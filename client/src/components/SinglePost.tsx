@@ -11,7 +11,7 @@ interface HomeProps {
   post: Post;
 }
 
-function SinglePost({ post }: HomeProps) {
+function SinglePost({ post, fetchPosts }: HomeProps) {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   //TODO implement GRID to see posts
@@ -34,8 +34,13 @@ function SinglePost({ post }: HomeProps) {
       };
 
       fetch("http://localhost:5005/api/post/deletePost", requestOptions)
-        .then((response) => response.json())
-        .then((result) => console.log(result))
+        .then((response) => {
+          response.json();
+        })
+        .then((result) => {
+          console.log("delete post function", result);
+          fetchPosts();
+        })
         .catch((error) => console.log("error", error));
     } else {
       alert("login first");
@@ -45,7 +50,8 @@ function SinglePost({ post }: HomeProps) {
   useEffect(() => {
     console.log("post", post);
   }, []);
-
+  console.log("user", user);
+  console.log("post", post);
   return (
     <Col>
       <Card style={{ width: "18rem" }} key={post?._id}>

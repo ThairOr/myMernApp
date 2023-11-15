@@ -19,6 +19,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/profile", jwtAuth, getProfile);
 router.get("/checkUserStatus", jwtAuth, checkUserStatus);
-router.post("/updateuser/", updateUser);
-router.delete("/deleteuser/:_id", deleteUser);
+router.post("/updateuser", updateUser);
+router.delete("/deleteuser/:_id", jwtAuth, deleteUser);
 export default router;

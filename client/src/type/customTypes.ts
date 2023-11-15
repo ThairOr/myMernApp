@@ -9,14 +9,26 @@ export interface NewPost {
   time: Date;
 }
 
+
 export interface User {
-    username: string;
-    email: string;
+  userName: string;
+  email: string;
   userImage: string;
   signupTime: Date;
+  _id: string;
+  bio: string;
+
 }
-export interface Comments {
-  _id:string
+export interface CommentsType {
+  _id: string;
+  user: {
+    userName: string,
+    email: string;
+  };
+  message: string;
+  date: Date;
+  posts: string;
+
 }
 
 export interface Location {
@@ -31,7 +43,7 @@ export interface SavedBy {
 export interface Post {
   _id: string;
   captions: string;
-  comments: Comments[];
+  comments: CommentsType[];
   image: string;
   likes: number;
   location:Location
@@ -40,3 +52,7 @@ export interface Post {
   user: string;
   saved_by:SavedBy[]
 }
+
+  export interface UserImage {
+    userImage: string;
+  }

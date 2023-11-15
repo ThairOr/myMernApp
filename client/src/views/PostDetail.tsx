@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Comments from "../components/Comment";
 import { Post } from "../type/customTypes";
-// import Home from "../components/SinglePost";
-// import SinglePost from "../components/SinglePost";
 import { Card } from "react-bootstrap";
 
 function PostDetail() {
@@ -29,18 +27,17 @@ function PostDetail() {
       if (response.status === 200) {
         const data = await response.json();
         console.log("data=>", data);
-        console.log("posts=>", post);
         setPost(data);
+        console.log("posts=>", post);
       }
     } catch (error) {
       console.log("error :>> ", error);
     }
   };
+  console.log("COMMENTS", comments);
 
   useEffect(() => {
     fetchPost();
-    // getLocation();
-
     console.log(postId);
   }, []);
 
@@ -57,7 +54,13 @@ function PostDetail() {
           {/* <Card.Text>{post?.likes}</Card.Text> */}
           {/* <Card.Text>{post?.saved_by}</Card.Text> */}
           <Card.Text>
-            {post && <Comments comments={comments} _id={postId} />}
+            {post && (
+              <Comments
+                comments={comments}
+                _id={postId}
+                fetchPost={fetchPost}
+              />
+            )}
           </Card.Text>
         </Card.Body>
       </Card>

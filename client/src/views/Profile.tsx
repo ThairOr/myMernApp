@@ -1,12 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Button, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Button, Card, Nav } from "react-bootstrap";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { BsFillPencilFill } from "react-icons/bs";
 
 type User = {
   userName: string;
   email: string;
   userImage: string;
+  _id: string;
+  bio: string;
+  signupTime: Date;
 };
 
 function Profile() {
@@ -15,15 +19,9 @@ function Profile() {
   const [info, setInfo] = useState<string | null>(null);
   const navigate = useNavigate();
   console.log("user", user);
-  // const userID = user!._id;
-  // console.log("userID", userID);
-
-  // const submitGetProfile = () => {
-  //   getProfile();
-  // };
 
   useEffect(() => {
-    // getProfile();
+    getProfile();
     if (!user) {
       setInfo("Please login to view your profile");
     }
@@ -41,13 +39,21 @@ function Profile() {
 
         <div>
           <Card style={{ width: "30rem" }} className="profile" key={user.email}>
+            <Nav.Link
+              as={NavLink}
+              style={{ textAlign: "right", margin: "1rem" }}
+              to={`/updateprofile/${user!.email}`}
+            >
+              <BsFillPencilFill />
+            </Nav.Link>
+
             <Card.Img
               variant="top"
               src={user.userImage}
               alt="profile picture"
             />
             <Card.Body>
-              <Card.Text>username:{user?.username}</Card.Text>
+              <Card.Text>username:{user?.userName}</Card.Text>
               <hr />
               <Card.Text>email:{user?.email}</Card.Text>
               <hr />
@@ -66,8 +72,6 @@ function Profile() {
             </Card.Body>
           </Card>
         </div>
-
-        {/* <button onClick={getProfile}>get Profile</button> */}
       </div>
     )
   );

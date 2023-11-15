@@ -1,6 +1,5 @@
 import commentsModel from "../models/commentsModel.js";
 import postsModel from "../models/postsModel.js";
-import userModel from "../models/userModel.js";
 
 const getAllComments = async (req, res) => {
   const allComments = await commentsModel
@@ -24,15 +23,15 @@ const CreateComment = async (req, res) => {
   console.log("req.body :>> ", req.body);
 
   try {
-    //  المستخدم موجود من لاقيه من الايميل
-    // const existingUser = await userModel.findOne({ email: req.body.email });
-    // console.log("existingUser :>> ", existingUser);
-    // اذا انوجد
-    // if (existingUser) {
+    //   // المستخدم موجود من لاقيه من الايميل
+    //   const existingUser = await userModel.findOne({ email: req.body.email });
+    //   console.log("existingUser :>> ", existingUser);
+    //  // اذا انوجد
+    //   if (existingUser) {
     try {
       // موجد متغير للمحادثة جديده
       const newComment = new commentsModel({
-        user: req.user._id,
+        // user: req.user._id,
         message: req.body.message,
         posts: CommentPostID,
         email: req.user.email,
@@ -74,23 +73,31 @@ const CreateComment = async (req, res) => {
     });
   }
 };
+
 const deleteComment = async (req, res) => {
-  const { idCommentToDelete } = req.body;
-  const { user } = req;
-  console.log("req.body", req.body);
+  const commentId = req.params._id;
+  console.log("commentId>>>>>", commentId);
+  if (!commentId) {
+    return res.status(400).json({
+      msg: "CommentId is required in the URL parameter",
+    });
+  }
+
   try {
-    // fin comment to delete
-    const deletedPost = await postsModel.findByIdAndRemove(idCommentToDelete);
-    console.log("deleteComment", deleteComment);
-    if (deleteComment) {
+    const deletedComment = await commentsModel.findByIdAndDelete(commentId);
+    if (!deletedComment) {
+      return res.status(404).json({
+        msg: "Comment not found in the comments collection",
+      });
+    } else {
       res.status(200).json({
-        message: "delete comment",
+        msg: "Comment deleted successfully",
       });
     }
   } catch (error) {
-    console.log("error deleting post", error);
-    res.status(400).json({
-      message: "cannot delete comment",
+    res.status(500).json({
+      msg: "Something went wrong",
+      error: error,
     });
   }
 };

@@ -225,63 +225,88 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
-  // console.log("req.user :>> ", req.user);
-  // console.log("req.body :>> ", req.body);
+// const updateUser = async (req, res) => {
+//   // console.log("req.user :>> ", req.user);
+//   // console.log("req.body :>> ", req.body);
 
-  const { userName, email, userImage, password, _id } = req.body;
-  // const id = req.user._id;
+//   const { userName, email, userImage, _id } = req.body;
+//   // const id = req.user._id;
+
+//   try {
+//     const updatedFields = {};
+//     if (userName) {
+//       const existingUsername = await userModel.findOne({ userName: userName });
+//       if (existingUsername === userName) {
+//         return res
+//           .status(400)
+//           .json({ errors: { msg: "Username already in use" } });
+//       }
+//       updatedFields.userName = userName;
+//     }
+//     if (email) {
+//       const existingEmail = await userModel.findOne({ email: email });
+//       const emailRegex =
+//         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+//       if (existingEmail && email !== req.user.email) {
+//         return res
+//           .status(400)
+//           .json({ errors: { msg: "Email already in use" } });
+//       }
+//       if (!emailRegex.test(email)) {
+//         return res
+//           .status(400)
+//           .json({ errors: { msg: "email address is invalid" } });
+//       }
+//       updatedFields.email = email;
+//     }
+//     if (userImage) {
+//       updatedFields.userImage = userImage;
+//     }
+//     if (password) {
+//       if (password.length < 6) {
+//         return res.status(400).json({
+//           errors: { msg: "password should be at least 6 characters" },
+//         });
+//       }
+//       const hashedPassword = await passwordEncryption(req.body.password);
+//       updatedFields.password = hashedPassword;
+//     }
+//     const updatedUser = await userModel.findByIdAndUpdate(_id, updatedFields, {
+//       new: true,
+//     });
+
+//     return res
+//       .status(200)
+//       .json({ msg: "Update successful", user: updatedUser });
+//   } catch (error) {
+//     // console.log("error", error);
+//     res.status(500).json({ msg: "Error updating info", error: error });
+//   }
+// };
+
+const updateUser = async (req, res) => {
+  const filter = { email: req.body.email };
+  const update = {
+    userName: req.body.userName,
+    userImage: req.body.userImage,
+    bio: req.body.bio,
+  };
 
   try {
-    const updatedFields = {};
-    if (userName) {
-      const existingUsername = await userModel.findOne({ userName: userName });
-      if (existingUsername === userName) {
-        return res
-          .status(400)
-          .json({ errors: { msg: "Username already in use" } });
-      }
-      updatedFields.userName = userName;
-    }
-    if (email) {
-      const existingEmail = await userModel.findOne({ email: email });
-      const emailRegex =
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-      if (existingEmail && email !== req.user.email) {
-        return res
-          .status(400)
-          .json({ errors: { msg: "Email already in use" } });
-      }
-      if (!emailRegex.test(email)) {
-        return res
-          .status(400)
-          .json({ errors: { msg: "email address is invalid" } });
-      }
-      updatedFields.email = email;
-    }
-    if (userImage) {
-      updatedFields.userImage = userImage;
-    }
-    if (password) {
-      if (password.length < 6) {
-        return res.status(400).json({
-          errors: { msg: "password should be at least 6 characters" },
-        });
-      }
-      const hashedPassword = await passwordEncryption(req.body.password);
-      updatedFields.password = hashedPassword;
-    }
-    const updatedUser = await userModel.findByIdAndUpdate(_id, updatedFields, {
+    const updatedUser = await userModel.findOneAndUpdate(filter, update, {
       new: true,
     });
 
-    return res
-      .status(200)
-      .json({ msg: "Update successful", user: updatedUser });
+    res.status(200).json({
+      msg: "User updated successfully",
+      updatedUser,
+    });
   } catch (error) {
-    // console.log("error", error);
-    res.status(500).json({ msg: "Error updating info", error: error });
+    res.status(500).json({
+      message: "Something went wrong when trying to update your user",
+      error: error,
+    });
   }
 };
 

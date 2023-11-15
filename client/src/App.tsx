@@ -27,6 +27,7 @@ import Profile from "./views/Profile";
 import Posts from "./views/Posts";
 import { AuthContextProvider } from "./context/AuthContext";
 import PostDetail from "./views/PostDetail";
+import UpdateProfile from "./views/UpdateProfile";
 
 function App() {
   const router = createBrowserRouter(
@@ -38,10 +39,8 @@ function App() {
         <Route path="logout" element={<Logout />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={<Profile />} />
-        {/* <Route path="posts" element={<Posts />}></Route> */}
         <Route path="post/:postId" element={<PostDetail />} />
-
-        {/* <Route path="*" element={<ErrorPage />} /> */}
+        <Route path="updateprofile/:email" element={<UpdateProfile />} />
       </Route>
     )
   );
