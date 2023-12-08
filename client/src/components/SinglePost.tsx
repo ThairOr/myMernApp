@@ -20,14 +20,14 @@ function SinglePost({ post, fetchPosts }: HomeProps) {
   const deletePost = async (idPostToDelete) => {
     const token = localStorage.getItem("token");
     if (token) {
-      var myHeaders = new Headers();
+      const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
       myHeaders.append("Authorization", `Bearer ${token}`);
 
-      var urlencoded = new URLSearchParams();
+      const urlencoded = new URLSearchParams();
       urlencoded.append("idPostToDelete", idPostToDelete);
 
-      var requestOptions = {
+      const requestOptions = {
         method: "PUT",
         headers: myHeaders,
         body: urlencoded,
